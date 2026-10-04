@@ -17,7 +17,10 @@ services:
       # Cache downloaded electron binaries between runs to speed up compilation
       - electron-cache:/app/.electron-cache
       - electron-builder-cache:/app/.electron-builder-cache
+      # Cache downloaded crates and rust packages
+      - cargo-cache:/usr/local/cargo/registry
 
 volumes:
   electron-cache:
   electron-builder-cache:
+  cargo-cache:

@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // DOM Elements
   const form = document.getElementById('builder-form');
   const urlInput = document.getElementById('url-input');
+  const frameworkSelect = document.getElementById('framework-select');
   const formatSelect = document.getElementById('format-select');
   const customNameInput = document.getElementById('custom-name-input');
   const generateBtn = document.getElementById('generate-btn');
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <div class="history-item">
           <div class="history-details">
+            <span class="history-framework-tag ${b.framework || 'electron'}">${b.framework === 'tauri' ? 'Tauri' : 'Electron'}</span>
             <span class="history-format-tag">${b.format}</span>
             <div>
               <div class="history-name">${escapeHtml(b.displayName)}</div>
@@ -130,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Handle Build Generation
   generateBtn.addEventListener('click', async () => {
     const url = urlInput.value.trim();
+    const framework = (frameworkSelect && frameworkSelect.value) || 'electron';
     const format = formatSelect.value;
     const customName = customNameInput.value.trim();
 
@@ -157,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch('/api/build', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, format, customName })
+        body: JSON.stringify({ url, framework, format, customName })
       });
 
       const data = await response.json();

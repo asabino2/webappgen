@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Create build request
 app.post('/api/build', (req, res) => {
-  const { url, format, customName } = req.body;
+  const { url, format, framework, customName } = req.body;
 
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'Uma URL válida é obrigatória.' });
@@ -38,8 +38,12 @@ app.post('/api/build', (req, res) => {
     });
   }
 
+  const validFrameworks = ['electron', 'tauri'];
+  const selectedFramework = framework && validFrameworks.includes(framework) ? framework : 'electron';
+
   const job = createBuild({
     url: normalizedUrl,
+    framework: selectedFramework,
     format,
     customName: customName ? customName.trim() : null
   });
@@ -48,6 +52,7 @@ app.post('/api/build', (req, res) => {
     success: true,
     buildId: job.id,
     displayName: job.displayName,
+    framework: job.framework,
     format: job.format,
     url: job.url
   });
@@ -77,6 +82,7 @@ app.get('/api/build/:id/events', (req, res) => {
     status: job.status,
     progress: job.progress,
     displayName: job.displayName,
+    framework: job.framework,
     format: job.format,
     logs: job.logs,
     artifact: job.artifact,
@@ -131,6 +137,7 @@ app.get('/api/build/:id', (req, res) => {
   res.json({
     id: job.id,
     url: job.url,
+    framework: job.framework,
     format: job.format,
     displayName: job.displayName,
     status: job.status,

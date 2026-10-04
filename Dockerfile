@@ -5,9 +5,17 @@ FROM node:20-bookworm
 # Set non-interactive debian frontend
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies required by electron-builder for building
-# AppImage, DEB, RPM, and Windows executables
+# Install dependencies required by electron-builder and tauri
+# for building AppImage, DEB, RPM, and Windows executables
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    libgtk-3-dev \
+    libayatana-appindicator3-dev \
+    librsvg2-dev \
+    libwebkit2gtk-4.0-dev \
+    libwebkit2gtk-4.1-dev \
     rpm \
     file \
     libarchive-tools \
@@ -16,9 +24,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wine \
     wine64 \
     curl \
+    wget \
     git \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Rust toolchain for Tauri
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
+    && chmod -R a+w /usr/local/rustup /usr/local/cargo \
+    && npm install -g @tauri-apps/cli
 
 # Set up working directory
 WORKDIR /app

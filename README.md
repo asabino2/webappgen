@@ -7,6 +7,9 @@
 ## ✨ Recursos
 
 - 🌐 **Interface Web Moderna**: Design responsivo com estética dark mode, glassmorphism, tipografia moderna (Plus Jakarta Sans e JetBrains Mono) e efeitos visuais refinados.
+- ⚙️ **Escolha de Framework**:
+  - **⚡ Electron (Padrão)**: Runtime completo baseado em Chromium + Node.js com isolamento de contexto seguro.
+  - **🦀 Tauri**: Alternativa ultra-leve baseada em Rust e WebView nativo do sistema operacional.
 - 📦 **Formatos Suportados**:
   - **Windows Executável (.exe)**: Versão portável autocontida, roda diretamente sem necessidade de instalação.
   - **Linux AppImage (.AppImage)**: Pacote universal executável para qualquer distribuição Linux.

@@ -86,6 +86,26 @@
             </div>
           </div>
 
+          <!-- Framework Combobox -->
+          <div class="form-group framework-group">
+            <label for="framework-select" class="form-label">
+              <span>Framework</span>
+              <span class="label-hint">Motor Desktop</span>
+            </label>
+            <div class="select-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+              <select id="framework-select" name="framework" class="form-select" required>
+                <option value="electron" selected>⚡ Electron (Padrão)</option>
+                <option value="tauri">🦀 Tauri</option>
+              </select>
+              <div class="select-arrow">▼</div>
+            </div>
+          </div>
+
           <!-- Format Combobox -->
           <div class="form-group format-group">
             <label for="format-select" class="form-label">
@@ -239,7 +259,7 @@
 
   <footer class="app-footer">
     <div class="container footer-container">
-      <p>WebAppGen • Criado com Node.js e Electron • Suporte a Windows .exe, Linux AppImage, DEB e RPM</p>
+      <p>WebAppGen • Criado com Node.js, Electron & Tauri • Suporte a Windows .exe, Linux AppImage, DEB e RPM</p>
     </div>
   </footer>
 

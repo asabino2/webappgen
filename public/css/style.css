@@ -257,7 +257,7 @@ body {
 /* Form Styles */
 .form-grid {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
@@ -265,7 +265,7 @@ body {
   grid-column: 1 / -1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -781,6 +781,23 @@ body {
   background: rgba(56, 189, 248, 0.15);
   color: var(--primary);
   border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.history-framework-tag {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.history-framework-tag.tauri {
+  background: rgba(249, 115, 22, 0.15);
+  color: #fdba74;
+  border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
 .history-name {
