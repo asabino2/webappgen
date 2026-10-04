@@ -31,15 +31,27 @@ app.post('/api/build', (req, res) => {
     return res.status(400).json({ error: 'A URL informada possui formato inválido.' });
   }
 
-  const validFormats = ['exe', 'AppImage', 'deb', 'rpm'];
+  const validFormats = ['exe', 'AppImage', 'deb', 'rpm', 'apk'];
   if (!format || !validFormats.includes(format)) {
     return res.status(400).json({ 
       error: `Formato inválido. Os formatos suportados são: ${validFormats.join(', ')}` 
     });
   }
 
-  const validFrameworks = ['electron', 'tauri'];
+  const validFrameworks = ['electron', 'tauri', 'capacitor'];
   const selectedFramework = framework && validFrameworks.includes(framework) ? framework : 'electron';
+
+  if (selectedFramework === 'capacitor' && format !== 'apk') {
+    return res.status(400).json({
+      error: 'Para o framework Capacitor, o único formato disponível é APK Android (apk).'
+    });
+  }
+
+  if (selectedFramework !== 'capacitor' && format === 'apk') {
+    return res.status(400).json({
+      error: 'O formato APK Android (apk) está disponível exclusivamente para o framework Capacitor.'
+    });
+  }
 
   const job = createBuild({
     url: normalizedUrl,

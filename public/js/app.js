@@ -68,10 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ? `<a href="${b.artifact.downloadUrl}" class="btn btn-success" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;" download>Baixar (${b.artifact.formattedSize})</a>`
         : `<span class="status-badge ${b.status}">${b.status === 'failed' ? 'Falhou' : 'Processando'}</span>`;
 
+      const fwName = b.framework === 'tauri'
+        ? 'Tauri'
+        : (b.framework === 'capacitor' ? 'Capacitor' : 'Electron');
+
       return `
         <div class="history-item">
           <div class="history-details">
-            <span class="history-framework-tag ${b.framework || 'electron'}">${b.framework === 'tauri' ? 'Tauri' : 'Electron'}</span>
+            <span class="history-framework-tag ${b.framework || 'electron'}">${fwName}</span>
             <span class="history-format-tag">${b.format}</span>
             <div>
               <div class="history-name">${escapeHtml(b.displayName)}</div>
@@ -82,6 +86,53 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     }).join('');
+  }
+
+  // Synchronize format combobox based on selected framework
+  const desktopFormatOptions = [
+    { value: 'exe', label: '🪟 Windows Executável (.exe portátil)' },
+    { value: 'AppImage', label: '🐧 Linux AppImage (.AppImage universal)' },
+    { value: 'deb', label: '📦 Instalador Debian / Ubuntu (.deb)' },
+    { value: 'rpm', label: '🎩 Instalador Fedora / RHEL (.rpm)' }
+  ];
+
+  const androidFormatOptions = [
+    { value: 'apk', label: '🤖 APK Android (.apk instalador)' }
+  ];
+
+  function updateFormatOptions() {
+    const selectedFramework = frameworkSelect.value;
+    const currentVal = formatSelect.value;
+    formatSelect.innerHTML = '';
+
+    if (selectedFramework === 'capacitor') {
+      androidFormatOptions.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.label;
+        option.selected = true;
+        formatSelect.appendChild(option);
+      });
+    } else {
+      desktopFormatOptions.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.label;
+        if (opt.value === currentVal && currentVal !== 'apk') {
+          option.selected = true;
+        }
+        formatSelect.appendChild(option);
+      });
+
+      if (!desktopFormatOptions.some(opt => opt.value === formatSelect.value)) {
+        formatSelect.value = desktopFormatOptions[0].value;
+      }
+    }
+  }
+
+  if (frameworkSelect) {
+    frameworkSelect.addEventListener('change', updateFormatOptions);
+    updateFormatOptions();
   }
 
   // 3. Quick preset chips handler

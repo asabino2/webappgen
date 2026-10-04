@@ -19,8 +19,11 @@ services:
       - electron-builder-cache:/app/.electron-builder-cache
       # Cache downloaded crates and rust packages
       - cargo-cache:/usr/local/cargo/registry
+      # Cache Gradle downloads and wrappers for Capacitor Android builds
+      - gradle-cache:/root/.gradle
 
 volumes:
   electron-cache:
   electron-builder-cache:
   cargo-cache:
+  gradle-cache:

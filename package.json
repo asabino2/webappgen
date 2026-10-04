@@ -20,6 +20,9 @@
   "author": "WebAppGen",
   "license": "MIT",
   "dependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "sharp": "^0.35.5"

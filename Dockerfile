@@ -1,67 +1,86 @@
-# WebAppGen - Desktop App Generator for Websites
-# Multi-platform packaging container for Linux (AppImage, DEB, RPM) and Windows (.exe)
-FROM node:20-bookworm
+# WebAppGen - Multi-platform App Generator for Websites
+# Multi-platform packaging container for Linux (AppImage, DEB, RPM), Windows (.exe) and Android (.apk)
+FROM node:20-alpine
 
-# Set non-interactive debian frontend
-ENV DEBIAN_FRONTEND=noninteractive
+# Set non-interactive environment
+ENV CI=1
 
-# Install dependencies required by electron-builder and tauri
-# for building AppImage, DEB, RPM, and Windows executables
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    pkg-config \
-    libssl-dev \
-    libgtk-3-dev \
-    libayatana-appindicator3-dev \
-    librsvg2-dev \
-    libwebkit2gtk-4.0-dev \
-    libwebkit2gtk-4.1-dev \
-    rpm \
-    file \
-    libarchive-tools \
-    libfuse2 \
-    fuse \
-    wine \
-    wine64 \
+# Install runtime and build dependencies on Alpine Linux:
+# - bash, curl, wget, git, unzip, tar, file, ca-certificates
+# - openjdk17 (JDK for Android SDK and Gradle builds)
+# - gcompat, libstdc++, libgcc (glibc compatibility layer for precompiled Android SDK cmdline-tools & aapt2)
+# - python3, make, g++, pkgconf (native build tools)
+# - fuse, rpm (Linux packaging tools)
+# - rust, cargo (for Tauri builds)
+RUN apk update && apk add --no-cache \
+    bash \
     curl \
     wget \
     git \
+    unzip \
+    tar \
+    file \
     ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    openjdk17 \
+    gcompat \
+    libstdc++ \
+    libgcc \
+    python3 \
+    make \
+    g++ \
+    pkgconf \
+    fuse \
+    rpm \
+    vips-dev \
+    rust \
+    cargo
 
-# Install Rust toolchain for Tauri
-ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo \
-    PATH=/usr/local/cargo/bin:$PATH
+# Configure Java and Android SDK Environment
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk \
+    ANDROID_HOME=/opt/android-sdk \
+    ANDROID_SDK_ROOT=/opt/android-sdk \
+    GRADLE_USER_HOME=/root/.gradle
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
-    && chmod -R a+w /usr/local/rustup /usr/local/cargo \
-    && npm install -g @tauri-apps/cli
+ENV PATH=$PATH:$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+
+# Download and install Android Command Line Tools & essential SDK components for Capacitor
+ARG ANDROID_CMDLINE_TOOLS_URL=https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools /tmp/cmdline-tools && \
+    wget -q ${ANDROID_CMDLINE_TOOLS_URL} -O /tmp/cmdline-tools.zip && \
+    unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools && \
+    mv /tmp/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest && \
+    rm -rf /tmp/cmdline-tools.zip /tmp/cmdline-tools && \
+    yes | sdkmanager --licenses >/dev/null 2>&1 || true && \
+    sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+# Install global CLI tools for Capacitor and Tauri
+RUN npm install -g @capacitor/cli @tauri-apps/cli
 
 # Set up working directory
 WORKDIR /app
 
-# Configure Electron and Electron-Builder cache directories for persistence
-ENV ELECTRON_CACHE=/app/.electron-cache
-ENV ELECTRON_BUILDER_CACHE=/app/.electron-builder-cache
-ENV PORT=3000
+# Configure cache directories
+ENV ELECTRON_CACHE=/app/.electron-cache \
+    ELECTRON_BUILDER_CACHE=/app/.electron-builder-cache \
+    PORT=3000
 
-# Clone repository from GitHub
+# Clone repository from GitHub (optional override) or copy local files
 ARG REPO_URL=https://github.com/asabino2/webappgen.git
 ARG BRANCH=main
-RUN git clone --depth 1 --branch ${BRANCH} ${REPO_URL} .
+RUN git clone --depth 1 --branch ${BRANCH} ${REPO_URL} . || true
+COPY . /app
 
 # Install npm dependencies
 RUN npm install
 
 # Create persistent storage directories
-RUN mkdir -p /app/builds /app/.electron-cache /app/.electron-builder-cache
+RUN mkdir -p /app/builds /app/.electron-cache /app/.electron-builder-cache /root/.gradle
 
 # Expose web server port
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:3000/api/info || exit 1
 
 # Start the application

@@ -800,6 +800,12 @@ body {
   border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
+.history-framework-tag.capacitor {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
 .history-name {
   font-weight: 600;
   font-size: 0.95rem;
