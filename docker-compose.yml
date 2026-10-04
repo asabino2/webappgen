@@ -1,0 +1,23 @@
+services:
+  webappgen:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: webappgen:latest
+    container_name: webappgen-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    volumes:
+      # Keep generated desktop apps accessible on host machine
+      - ./builds:/app/builds
+      # Cache downloaded electron binaries between runs to speed up compilation
+      - electron-cache:/app/.electron-cache
+      - electron-builder-cache:/app/.electron-builder-cache
+
+volumes:
+  electron-cache:
+  electron-builder-cache:

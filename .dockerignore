@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.electron-cache
+.electron-builder-cache
+builds/*
+!builds/.gitkeep

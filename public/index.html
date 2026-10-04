@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebAppGen - Gerador de Aplicativos Desktop para Websites</title>
+  <meta name="description" content="Converta qualquer website ou aplicação web em um aplicativo nativo para Windows (.exe) e Linux (AppImage, deb, rpm).">
+  
+  <!-- Modern Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="assets/icon.png">
+</head>
+<body>
+  <div class="background-glow top-left"></div>
+  <div class="background-glow bottom-right"></div>
+
+  <header class="app-header">
+    <div class="container header-container">
+      <div class="brand">
+        <div class="logo-box">
+          <img src="assets/icon.png" alt="WebAppGen Logo" class="brand-logo" id="brand-logo">
+        </div>
+        <div>
+          <h1 class="brand-title">WebApp<span class="text-gradient">Gen</span></h1>
+          <p class="brand-subtitle">Empacotador de Web Apps para Desktop</p>
+        </div>
+      </div>
+      
+      <div class="header-badges">
+        <span class="badge" id="env-badge">
+          <span class="dot pulse"></span>
+          <span id="env-text">Carregando sistema...</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <!-- Builder Card -->
+    <section class="card glass-card builder-card">
+      <div class="card-header">
+        <div class="step-indicator">1</div>
+        <div>
+          <h2 class="section-title">Configurar e Gerar Aplicativo</h2>
+          <p class="section-desc">Insira a URL do website desejado e selecione o formato do executável.</p>
+        </div>
+      </div>
+
+      <form id="builder-form" class="builder-form" onsubmit="return false;">
+        <div class="form-grid">
+          <!-- URL Input -->
+          <div class="form-group url-group">
+            <label for="url-input" class="form-label">
+              <span>URL do Website</span>
+              <span class="label-hint">Ex: https://notion.so</span>
+            </label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              <input 
+                type="url" 
+                id="url-input" 
+                name="url" 
+                class="form-input" 
+                placeholder="https://exemplo.com.br" 
+                required 
+                autocomplete="off"
+              >
+            </div>
+            
+            <!-- Quick preset chips -->
+            <div class="quick-presets">
+              <span class="preset-label">Exemplos rápidos:</span>
+              <button type="button" class="chip" data-url="https://web.whatsapp.com" data-name="WhatsApp">WhatsApp</button>
+              <button type="button" class="chip" data-url="https://chatgpt.com" data-name="ChatGPT">ChatGPT</button>
+              <button type="button" class="chip" data-url="https://notion.so" data-name="Notion">Notion</button>
+              <button type="button" class="chip" data-url="https://github.com" data-name="GitHub">GitHub</button>
+              <button type="button" class="chip" data-url="https://linear.app" data-name="Linear">Linear</button>
+            </div>
+          </div>
+
+          <!-- Format Combobox -->
+          <div class="form-group format-group">
+            <label for="format-select" class="form-label">
+              <span>Formato do Aplicativo</span>
+              <span class="label-hint">Sistema operacional</span>
+            </label>
+            <div class="select-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <select id="format-select" name="format" class="form-select" required>
+                <option value="exe" selected>🪟 Windows Executável (.exe portátil)</option>
+                <option value="AppImage">🐧 Linux AppImage (.AppImage universal)</option>
+                <option value="deb">📦 Instalador Debian / Ubuntu (.deb)</option>
+                <option value="rpm">🎩 Instalador Fedora / RHEL (.rpm)</option>
+              </select>
+              <div class="select-arrow">▼</div>
+            </div>
+          </div>
+
+          <!-- Optional Custom App Name -->
+          <div class="form-group name-group">
+            <label for="custom-name-input" class="form-label">
+              <span>Nome do Aplicativo</span>
+              <span class="label-hint">(Opcional - detectado via URL)</span>
+            </label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <input 
+                type="text" 
+                id="custom-name-input" 
+                name="customName" 
+                class="form-input" 
+                placeholder="Ex: Meu Portal Web"
+                autocomplete="off"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button type="button" id="generate-btn" class="btn btn-primary btn-glow">
+            <span class="btn-icon">⚡</span>
+            <span class="btn-text">Gerar App</span>
+            <div class="spinner hidden" id="btn-spinner"></div>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Progress & Feedback Area -->
+    <section class="card glass-card progress-card" id="progress-section">
+      <div class="card-header">
+        <div class="step-indicator" id="status-step-indicator">2</div>
+        <div class="header-content-wrapper">
+          <div class="title-with-status">
+            <h2 class="section-title">Status da Compilação</h2>
+            <span class="status-badge" id="build-status-badge">Aguardando início</span>
+          </div>
+          <p class="section-desc" id="stage-desc">Aguardando solicitação para iniciar o processo.</p>
+        </div>
+        <div class="progress-percentage" id="progress-percentage-label">0%</div>
+      </div>
+
+      <!-- Modern Progress Bar -->
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width: 0%;">
+            <div class="progress-shine"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download Result Card (Displayed when finished) -->
+      <div class="download-container hidden" id="download-section">
+        <div class="download-card">
+          <div class="download-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-check">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="download-info">
+            <h3 class="download-title" id="download-app-name">Aplicativo Pronto!</h3>
+            <p class="download-meta">
+              <span id="download-filename">app.exe</span> • <span id="download-filesize">0 MB</span>
+            </p>
+          </div>
+          <a href="#" id="download-btn" class="btn btn-success btn-glow download-action-btn" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="download-svg">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Baixar Aplicativo</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Realtime Terminal Logs -->
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="terminal-title">Console de Logs em Tempo Real</div>
+          <div class="terminal-actions">
+            <button type="button" class="term-btn" id="copy-log-btn" title="Copiar Logs">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copiar</span>
+            </button>
+            <button type="button" class="term-btn" id="clear-log-btn" title="Limpar">
+              <span>Limpar</span>
+            </button>
+          </div>
+        </div>
+        <div class="terminal-body" id="terminal-logs">
+          <div class="log-line text-muted">
+            <span class="log-time">--:--:--</span>
+            <span class="log-msg">Pronto para gerar seu aplicativo. Digite a URL acima e clique em "Gerar App".</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Builds Section -->
+    <section class="card glass-card history-card" id="history-section">
+      <div class="card-header">
+        <div class="step-indicator">3</div>
+        <div>
+          <h2 class="section-title">Histórico de Compilações Recentes</h2>
+          <p class="section-desc">Acesse ou baixe os aplicativos gerados nesta sessão.</p>
+        </div>
+      </div>
+      <div class="history-list" id="history-list">
+        <p class="text-muted empty-history">Nenhum aplicativo gerado ainda.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container footer-container">
+      <p>WebAppGen • Criado com Node.js e Electron • Suporte a Windows .exe, Linux AppImage, DEB e RPM</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
