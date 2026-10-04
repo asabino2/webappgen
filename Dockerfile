@@ -28,14 +28,13 @@ ENV ELECTRON_CACHE=/app/.electron-cache
 ENV ELECTRON_BUILDER_CACHE=/app/.electron-builder-cache
 ENV PORT=3000
 
-# Copy dependency manifests
-COPY package*.json ./
+# Clone repository from GitHub
+ARG REPO_URL=https://github.com/asabino2/webappgen.git
+ARG BRANCH=main
+RUN git clone --depth 1 --branch ${BRANCH} ${REPO_URL} .
 
 # Install npm dependencies
 RUN npm install
-
-# Copy application code
-COPY . .
 
 # Create persistent storage directories
 RUN mkdir -p /app/builds /app/.electron-cache /app/.electron-builder-cache
