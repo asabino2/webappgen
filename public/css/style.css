@@ -257,11 +257,11 @@ body {
 /* Form Styles */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
 }
 
-.url-group {
+.url-group, .icon-group {
   grid-column: 1 / -1;
 }
 
@@ -269,6 +269,225 @@ body {
   .form-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Field with inline action button */
+.field-with-btn {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.field-with-btn .input-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-field-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0 1rem;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--primary);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.btn-field-action:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.btn-field-action:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-field-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-field-action.loading .action-icon {
+  animation: spin 0.8s linear infinite;
+}
+
+.btn-field-action.success {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--success);
+  color: var(--success);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+}
+
+.action-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+/* App Icon Picker */
+.icon-field-layout {
+  display: flex;
+  align-items: stretch;
+  gap: 0.65rem;
+}
+
+.icon-picker-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: rgba(10, 14, 23, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.45rem 0.85rem;
+  transition: var(--transition);
+  min-width: 0;
+}
+
+.icon-picker-box:focus-within, .icon-picker-box:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.icon-preview-wrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.icon-preview-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 4px;
+  transition: transform 0.2s ease;
+}
+
+.icon-preview-wrapper:hover .icon-preview-img {
+  transform: scale(1.1);
+}
+
+.icon-source-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.85);
+  font-size: 0.52rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 1px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.icon-source-badge.site {
+  color: #fff;
+  background: rgba(2, 132, 199, 0.9);
+}
+
+.icon-source-badge.custom {
+  color: #fff;
+  background: rgba(16, 185, 129, 0.9);
+}
+
+.icon-file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-choose-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.btn-choose-file:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: var(--primary);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.icon-file-name {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.btn-reset-icon {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--danger);
+  font-size: 0.8rem;
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.btn-reset-icon:hover {
+  background: var(--danger);
+  color: #fff;
+  box-shadow: 0 0 10px var(--danger-glow);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
 .form-group {

@@ -78,11 +78,11 @@
             <!-- Quick preset chips -->
             <div class="quick-presets">
               <span class="preset-label">Exemplos rápidos:</span>
-              <button type="button" class="chip" data-url="https://web.whatsapp.com" data-name="WhatsApp">WhatsApp</button>
-              <button type="button" class="chip" data-url="https://chatgpt.com" data-name="ChatGPT">ChatGPT</button>
-              <button type="button" class="chip" data-url="https://notion.so" data-name="Notion">Notion</button>
-              <button type="button" class="chip" data-url="https://github.com" data-name="GitHub">GitHub</button>
-              <button type="button" class="chip" data-url="https://linear.app" data-name="Linear">Linear</button>
+              <button type="button" class="chip" data-url="https://web.whatsapp.com" data-name="WhatsApp" data-title="WhatsApp Web">WhatsApp</button>
+              <button type="button" class="chip" data-url="https://chatgpt.com" data-name="ChatGPT" data-title="ChatGPT - OpenAI">ChatGPT</button>
+              <button type="button" class="chip" data-url="https://notion.so" data-name="Notion" data-title="Notion – Workspace">Notion</button>
+              <button type="button" class="chip" data-url="https://github.com" data-name="GitHub" data-title="GitHub: Where the world builds software">GitHub</button>
+              <button type="button" class="chip" data-url="https://linear.app" data-name="Linear" data-title="Linear – Issue Tracking">Linear</button>
             </div>
           </div>
 
@@ -129,25 +129,100 @@
             </div>
           </div>
 
-          <!-- Optional Custom App Name -->
+          <!-- App Title Field -->
+          <div class="form-group title-group">
+            <label for="app-title-input" class="form-label">
+              <span>Título do Aplicativo</span>
+              <span class="label-hint">(Título da janela / exibição)</span>
+            </label>
+            <div class="field-with-btn">
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
+                </svg>
+                <input 
+                  type="text" 
+                  id="app-title-input" 
+                  name="appTitle" 
+                  class="form-input" 
+                  placeholder="Ex: WhatsApp Web - Mensagens e Chamadas" 
+                  autocomplete="off"
+                >
+              </div>
+              <button type="button" class="btn-field-action" id="btn-auto-title" title="Obter título automaticamente da página do site">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="action-icon">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                  <polyline points="21 3 21 9 15 9"/>
+                </svg>
+                <span>Auto</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- App Compact Name Field -->
           <div class="form-group name-group">
             <label for="custom-name-input" class="form-label">
               <span>Nome do Aplicativo</span>
-              <span class="label-hint">(Opcional - detectado via URL)</span>
+              <span class="label-hint">(Versão compacta / executável)</span>
             </label>
-            <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <input 
-                type="text" 
-                id="custom-name-input" 
-                name="customName" 
-                class="form-input" 
-                placeholder="Ex: Meu Portal Web"
-                autocomplete="off"
-              >
+            <div class="field-with-btn">
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <input 
+                  type="text" 
+                  id="custom-name-input" 
+                  name="customName" 
+                  class="form-input" 
+                  placeholder="Ex: WhatsApp" 
+                  autocomplete="off"
+                >
+              </div>
+              <button type="button" class="btn-field-action" id="btn-auto-name" title="Preencher automaticamente com versão compacta do título">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="action-icon">
+                  <path d="M4 14h6m-6 4h4m4-14h8m-8 4h6m-6 4h4"/>
+                </svg>
+                <span>Auto</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- App Icon Picker Field -->
+          <div class="form-group icon-group">
+            <label class="form-label">
+              <span>Ícone do Aplicativo</span>
+              <span class="label-hint" id="icon-hint">PNG, ICO, SVG, JPG ou do site</span>
+            </label>
+            <div class="field-with-btn icon-field-layout">
+              <div class="icon-picker-box" id="icon-picker-box">
+                <div class="icon-preview-wrapper" id="icon-preview-wrapper" title="Pré-visualização do Ícone">
+                  <img src="assets/icon.png" alt="Pré-visualização do Ícone" id="icon-preview-img" class="icon-preview-img">
+                  <span class="icon-source-badge" id="icon-source-badge">Padrão</span>
+                </div>
+                <div class="icon-file-info">
+                  <label for="icon-file-input" class="btn-choose-file" tabindex="0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>Escolher Arquivo</span>
+                  </label>
+                  <input type="file" id="icon-file-input" accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/jpeg,image/svg+xml,image/webp" class="visually-hidden">
+                  <span class="icon-file-name" id="icon-file-name">Nenhum arquivo customizado</span>
+                  <button type="button" class="btn-reset-icon hidden" id="btn-reset-icon" title="Voltar ao ícone padrão">✕</button>
+                </div>
+              </div>
+              <button type="button" class="btn-field-action" id="btn-auto-icon" title="Obter favicon automaticamente do site">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="action-icon">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <span>Auto Favicon</span>
+              </button>
             </div>
           </div>
         </div>

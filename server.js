@@ -3,18 +3,48 @@ const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
 const { createBuild, getBuild, listRecentBuilds } = require('./lib/builder');
+const { fetchSiteMetadata } = require('./lib/icon-helper');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '15mb' }));
+app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Extract site metadata (page title, compact name, favicon)
+app.post('/api/site-metadata', async (req, res) => {
+  const { url } = req.body;
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Uma URL válida é obrigatória.' });
+  }
+
+  try {
+    const data = await fetchSiteMetadata(url);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message || 'Erro ao extrair metadados do website.' });
+  }
+});
+
+app.get('/api/site-metadata', async (req, res) => {
+  const url = req.query.url;
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Uma URL válida é obrigatória.' });
+  }
+
+  try {
+    const data = await fetchSiteMetadata(url);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message || 'Erro ao extrair metadados do website.' });
+  }
+});
 
 // Create build request
 app.post('/api/build', (req, res) => {
-  const { url, format, framework, customName } = req.body;
+  const { url, format, framework, customName, appTitle, iconData } = req.body;
 
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'Uma URL válida é obrigatória.' });
@@ -57,13 +87,16 @@ app.post('/api/build', (req, res) => {
     url: normalizedUrl,
     framework: selectedFramework,
     format,
-    customName: customName ? customName.trim() : null
+    customName: customName ? customName.trim() : null,
+    appTitle: appTitle ? appTitle.trim() : null,
+    iconData: iconData && typeof iconData === 'string' && iconData.length > 50 ? iconData : null
   });
 
   res.json({
     success: true,
     buildId: job.id,
     displayName: job.displayName,
+    appTitle: job.appTitle,
     framework: job.framework,
     format: job.format,
     url: job.url

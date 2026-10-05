@@ -109,6 +109,20 @@ webappgen/
 
 ---
 
+## 📝 Changelog
+
+### Versão 1.1.0
+- ✨ **Campo Título do Aplicativo**: Novo campo para definir o título oficial da janela e da aplicação desktop/mobile.
+- 🖼️ **Campo de Seleção de Ícone Customizado**: Novo seletor de arquivos de imagem (`.png`, `.ico`, `.jpg`, `.svg`, `.webp`) com miniatura de pré-visualização em tempo real, distintivo de origem (Padrão, Favicon Site ou Arquivo) e botão para redefinir.
+- ⚡ **Preenchimento Automático do Website (Botões Inline)**:
+  - **Auto Título**: Botão ao lado do campo *Título do Aplicativo* para extrair automaticamente a tag `<title>` ou metadados OpenGraph diretamente da página do website.
+  - **Auto Nome Compacto**: Botão ao lado do campo *Nome do Aplicativo* para gerar automaticamente uma versão limpa, concisa e sanitizada do título da página.
+  - **Auto Favicon**: Botão ao lado do campo *Ícone do Aplicativo* para buscar, converter para PNG em alta resolução e aplicar o favicon do site instantaneamente na interface e no instalador final.
+- 🚀 **Novo Endpoint `/api/site-metadata`**: Rota backend otimizada para detecção de metadados, títulos, favicons com fallback seguro e suporte a requisições com imagens em formato Base64 até 15MB.
+
+---
+
 ## 📄 Licença
 
 MIT License.
+

@@ -5,7 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlInput = document.getElementById('url-input');
   const frameworkSelect = document.getElementById('framework-select');
   const formatSelect = document.getElementById('format-select');
+  const appTitleInput = document.getElementById('app-title-input');
   const customNameInput = document.getElementById('custom-name-input');
+  const btnAutoTitle = document.getElementById('btn-auto-title');
+  const btnAutoName = document.getElementById('btn-auto-name');
+  const btnAutoIcon = document.getElementById('btn-auto-icon');
+  const iconFileInput = document.getElementById('icon-file-input');
+  const iconPreviewImg = document.getElementById('icon-preview-img');
+  const iconSourceBadge = document.getElementById('icon-source-badge');
+  const iconFileName = document.getElementById('icon-file-name');
+  const btnResetIcon = document.getElementById('btn-reset-icon');
   const generateBtn = document.getElementById('generate-btn');
   const btnSpinner = document.getElementById('btn-spinner');
   
@@ -28,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentEventSource = null;
   let allLogLines = [];
+  let currentIconData = null;
+  let cachedMetadata = { url: null, data: null };
 
   // 1. Fetch system info
   async function loadSystemInfo() {
@@ -140,9 +151,212 @@ document.addEventListener('DOMContentLoaded', () => {
     chip.addEventListener('click', () => {
       urlInput.value = chip.dataset.url;
       customNameInput.value = chip.dataset.name;
+      if (appTitleInput && chip.dataset.title) {
+        appTitleInput.value = chip.dataset.title;
+      }
+      cachedMetadata = { url: null, data: null };
       urlInput.focus();
     });
   });
+
+  // Helper to format file sizes
+  function formatBytes(bytes, decimals = 1) {
+    if (!+bytes) return '0 B';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  }
+
+  // Helper to fetch or use cached site metadata
+  async function fetchSiteInfo(targetUrl) {
+    let cleanUrl = targetUrl.trim();
+    if (!/^https?:\/\//i.test(cleanUrl)) {
+      cleanUrl = 'https://' + cleanUrl;
+    }
+
+    if (cachedMetadata.url === cleanUrl && cachedMetadata.data) {
+      return cachedMetadata.data;
+    }
+
+    const res = await fetch('/api/site-metadata', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: cleanUrl })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Não foi possível extrair metadados do site.');
+    }
+
+    const data = await res.json();
+    cachedMetadata = { url: cleanUrl, data };
+    return data;
+  }
+
+  // Reset icon to default holograph icon
+  function resetIcon() {
+    currentIconData = null;
+    if (iconPreviewImg) iconPreviewImg.src = 'assets/icon.png';
+    if (iconSourceBadge) {
+      iconSourceBadge.textContent = 'Padrão';
+      iconSourceBadge.className = 'icon-source-badge';
+    }
+    if (iconFileName) iconFileName.textContent = 'Nenhum arquivo customizado';
+    if (iconFileInput) iconFileInput.value = '';
+    if (btnResetIcon) btnResetIcon.classList.add('hidden');
+  }
+
+  if (btnResetIcon) {
+    btnResetIcon.addEventListener('click', resetIcon);
+  }
+
+  // Handle local icon file selection
+  if (iconFileInput) {
+    iconFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecione um arquivo de imagem válido (PNG, ICO, SVG, JPG, WebP).');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        currentIconData = event.target.result;
+        if (iconPreviewImg) iconPreviewImg.src = currentIconData;
+        if (iconSourceBadge) {
+          iconSourceBadge.textContent = 'Arquivo';
+          iconSourceBadge.className = 'icon-source-badge custom';
+        }
+        if (iconFileName) {
+          iconFileName.textContent = `${file.name} (${formatBytes(file.size)})`;
+        }
+        if (btnResetIcon) btnResetIcon.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Trigger flash animation on button
+  function flashButton(btn, isSuccess = true) {
+    btn.classList.remove('loading');
+    if (isSuccess) {
+      btn.classList.add('success');
+      setTimeout(() => btn.classList.remove('success'), 1800);
+    }
+  }
+
+  // Button: Auto Título (from page <title>)
+  if (btnAutoTitle) {
+    btnAutoTitle.addEventListener('click', async () => {
+      const url = urlInput.value.trim();
+      if (!url) {
+        urlInput.focus();
+        alert('Por favor, digite a URL do website primeiro.');
+        return;
+      }
+
+      btnAutoTitle.classList.add('loading');
+      btnAutoTitle.disabled = true;
+
+      try {
+        const data = await fetchSiteInfo(url);
+        if (data.title && appTitleInput) {
+          appTitleInput.value = data.title;
+        }
+        // If app name is currently empty, conveniently populate it with compact name too
+        if (customNameInput && !customNameInput.value.trim() && data.compactName) {
+          customNameInput.value = data.compactName;
+        }
+        flashButton(btnAutoTitle, true);
+      } catch (err) {
+        btnAutoTitle.classList.remove('loading');
+        alert(err.message || 'Erro ao obter título do site.');
+      } finally {
+        btnAutoTitle.disabled = false;
+      }
+    });
+  }
+
+  // Button: Auto Nome (compact version of the title)
+  if (btnAutoName) {
+    btnAutoName.addEventListener('click', async () => {
+      // If title is already filled in, derive compact version immediately
+      const currentTitle = appTitleInput ? appTitleInput.value.trim() : '';
+      const url = urlInput.value.trim();
+
+      if (!currentTitle && !url) {
+        urlInput.focus();
+        alert('Por favor, digite a URL ou o título do aplicativo primeiro.');
+        return;
+      }
+
+      btnAutoName.classList.add('loading');
+      btnAutoName.disabled = true;
+
+      try {
+        if (url) {
+          const data = await fetchSiteInfo(url);
+          // If user modified the title, use derived compact or data compact
+          if (customNameInput) {
+            customNameInput.value = data.compactName || 'WebApp';
+          }
+        } else if (currentTitle) {
+          // Quick fallback if only title is typed
+          const simpleCompact = currentTitle.split(/[-|—–·:•\/]/)[0].trim().substring(0, 25);
+          if (customNameInput) customNameInput.value = simpleCompact;
+        }
+        flashButton(btnAutoName, true);
+      } catch (err) {
+        btnAutoName.classList.remove('loading');
+        alert(err.message || 'Erro ao gerar nome compacto.');
+      } finally {
+        btnAutoName.disabled = false;
+      }
+    });
+  }
+
+  // Button: Auto Ícone (Favicon from website)
+  if (btnAutoIcon) {
+    btnAutoIcon.addEventListener('click', async () => {
+      const url = urlInput.value.trim();
+      if (!url) {
+        urlInput.focus();
+        alert('Por favor, digite a URL do website primeiro.');
+        return;
+      }
+
+      btnAutoIcon.classList.add('loading');
+      btnAutoIcon.disabled = true;
+
+      try {
+        const data = await fetchSiteInfo(url);
+        if (data.iconData) {
+          currentIconData = data.iconData;
+          if (iconPreviewImg) iconPreviewImg.src = data.iconData;
+          if (iconSourceBadge) {
+            iconSourceBadge.textContent = 'Favicon Site';
+            iconSourceBadge.className = 'icon-source-badge site';
+          }
+          if (iconFileName) iconFileName.textContent = 'Favicon extraído do website';
+          if (btnResetIcon) btnResetIcon.classList.remove('hidden');
+          flashButton(btnAutoIcon, true);
+        } else {
+          btnAutoIcon.classList.remove('loading');
+          alert('Nenhum favicon específico foi encontrado no website. Será utilizado o ícone padrão.');
+        }
+      } catch (err) {
+        btnAutoIcon.classList.remove('loading');
+        alert(err.message || 'Erro ao buscar favicon do site.');
+      } finally {
+        btnAutoIcon.disabled = false;
+      }
+    });
+  }
 
   // 4. Log appender
   function appendLog(item) {
@@ -185,7 +399,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = urlInput.value.trim();
     const framework = (frameworkSelect && frameworkSelect.value) || 'electron';
     const format = formatSelect.value;
-    const customName = customNameInput.value.trim();
+    const customName = customNameInput ? customNameInput.value.trim() : '';
+    const appTitle = appTitleInput ? appTitleInput.value.trim() : '';
+    const iconData = currentIconData;
 
     if (!url) {
       urlInput.focus();
@@ -211,7 +427,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch('/api/build', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, framework, format, customName })
+        body: JSON.stringify({ 
+          url, 
+          framework, 
+          format, 
+          customName: customName || null,
+          appTitle: appTitle || null,
+          iconData: iconData || null
+        })
       });
 
       const data = await response.json();
