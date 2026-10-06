@@ -61,7 +61,7 @@ app.post('/api/build', (req, res) => {
     return res.status(400).json({ error: 'A URL informada possui formato inválido.' });
   }
 
-  const validFormats = ['exe', 'AppImage', 'deb', 'rpm', 'apk'];
+  const validFormats = ['exe', 'AppImage', 'deb', 'rpm', 'apk', 'androidtv'];
   if (!format || !validFormats.includes(format)) {
     return res.status(400).json({ 
       error: `Formato inválido. Os formatos suportados são: ${validFormats.join(', ')}` 
@@ -71,15 +71,15 @@ app.post('/api/build', (req, res) => {
   const validFrameworks = ['electron', 'tauri', 'capacitor'];
   const selectedFramework = framework && validFrameworks.includes(framework) ? framework : 'electron';
 
-  if (selectedFramework === 'capacitor' && format !== 'apk') {
+  if (selectedFramework === 'capacitor' && !['apk', 'androidtv'].includes(format)) {
     return res.status(400).json({
-      error: 'Para o framework Capacitor, o único formato disponível é APK Android (apk).'
+      error: 'Para o framework Capacitor, os formatos disponíveis são APK Android Mobile (apk) e Android TV (androidtv).'
     });
   }
 
-  if (selectedFramework !== 'capacitor' && format === 'apk') {
+  if (selectedFramework !== 'capacitor' && ['apk', 'androidtv'].includes(format)) {
     return res.status(400).json({
-      error: 'O formato APK Android (apk) está disponível exclusivamente para o framework Capacitor.'
+      error: 'Os formatos APK Android (apk) e Android TV (androidtv) estão disponíveis exclusivamente para o framework Capacitor.'
     });
   }
 

@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const historyList = document.getElementById('history-list');
   const envBadgeText = document.getElementById('env-text');
 
+  const tvFormatHint = document.getElementById('tv-format-hint');
+
   let currentEventSource = null;
   let allLogLines = [];
   let currentIconData = null;
@@ -83,11 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'Tauri'
         : (b.framework === 'capacitor' ? 'Capacitor' : 'Electron');
 
+      const isTv = b.format === 'androidtv';
+      const formatLabel = isTv ? '📺 Android TV' : (b.format === 'apk' ? '🤖 Android' : b.format);
+
       return `
         <div class="history-item">
           <div class="history-details">
             <span class="history-framework-tag ${b.framework || 'electron'}">${fwName}</span>
-            <span class="history-format-tag">${b.format}</span>
+            <span class="history-format-tag ${isTv ? 'tv' : ''}">${formatLabel}</span>
             <div>
               <div class="history-name">${escapeHtml(b.displayName)}</div>
               <div class="history-url">${escapeHtml(b.url)}</div>
@@ -108,8 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const androidFormatOptions = [
-    { value: 'apk', label: '🤖 APK Android (.apk instalador)' }
+    { value: 'apk', label: '🤖 APK Android Mobile (.apk smartphone / tablet)' },
+    { value: 'androidtv', label: '📺 Android TV (.apk Leanback / Smart TV com controle & joystick)' }
   ];
+
+  function toggleTvHint() {
+    if (!tvFormatHint) return;
+    if (frameworkSelect.value === 'capacitor' && formatSelect.value === 'androidtv') {
+      tvFormatHint.classList.remove('hidden');
+    } else {
+      tvFormatHint.classList.add('hidden');
+    }
+  }
 
   function updateFormatOptions() {
     const selectedFramework = frameworkSelect.value;
@@ -121,15 +136,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const option = document.createElement('option');
         option.value = opt.value;
         option.textContent = opt.label;
-        option.selected = true;
+        if (opt.value === currentVal) {
+          option.selected = true;
+        }
         formatSelect.appendChild(option);
       });
+
+      if (!androidFormatOptions.some(opt => opt.value === formatSelect.value)) {
+        formatSelect.value = androidFormatOptions[0].value;
+      }
     } else {
       desktopFormatOptions.forEach(opt => {
         const option = document.createElement('option');
         option.value = opt.value;
         option.textContent = opt.label;
-        if (opt.value === currentVal && currentVal !== 'apk') {
+        if (opt.value === currentVal && !['apk', 'androidtv'].includes(currentVal)) {
           option.selected = true;
         }
         formatSelect.appendChild(option);
@@ -139,11 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
         formatSelect.value = desktopFormatOptions[0].value;
       }
     }
+
+    toggleTvHint();
   }
 
   if (frameworkSelect) {
     frameworkSelect.addEventListener('change', updateFormatOptions);
     updateFormatOptions();
+  }
+
+  if (formatSelect) {
+    formatSelect.addEventListener('change', toggleTvHint);
   }
 
   // 3. Quick preset chips handler

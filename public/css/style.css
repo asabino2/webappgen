@@ -1025,6 +1025,43 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
+.history-format-tag.tv {
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+/* Format info hint (Android TV info card) */
+.format-info-hint {
+  margin-top: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #bae6fd;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  animation: fadeIn 0.25s ease;
+}
+
+.format-info-hint.hidden {
+  display: none !important;
+}
+
+.hint-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 700;
+  color: #38bdf8;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 .history-name {
   font-weight: 600;
   font-size: 0.95rem;

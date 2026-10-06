@@ -89,12 +89,18 @@ webappgen/
 
 ---
 
-## 📱 Suporte ao Framework Capacitor (Android APK)
+## 📱 Suporte ao Framework Capacitor (Android Mobile & Android TV)
 
 - **WebView Otimizado**: Carrega a URL web informada diretamente com suporte a conteúdo misto seguro e tela de splash/fallback integrada.
 - **Configuração Automática**: Gera `capacitor.config.json` com `appId` sanitizado e estrutura nativa Android com `cap add android` / `cap sync android`.
-- **Compilação Gradle**: Executa `./gradlew assembleDebug` gerando o arquivo `.apk` pronto para instalação em smartphones e tablets Android.
+- **Compilação Gradle**: Executa `./gradlew assembleDebug` gerando o arquivo `.apk` pronto para instalação.
 - **Ícones Multi-Densidade**: Redimensiona automaticamente o ícone do site para todas as pastas `res/mipmap-*` do projeto Android.
+- **📺 Modo Android TV (.apk Leanback / Smart TV)**:
+  - **Banner 16:9 Oficial**: Gera o banner de launcher para Android TV (`res/drawable*/banner.png`, 320x180 px) baseado no ícone customizado ou do website com gradiente e moldura TV.
+  - **Leanback Launcher**: Configura o `AndroidManifest.xml` com `<category android:name="android.intent.category.LEANBACK_LAUNCHER" />`, `<uses-feature android.software.leanback>`, touchscreen desabilitado como obrigatório e orientação landscape.
+  - **Navegação Amigável por Controle Remoto**: Suporte total a D-pad (setas cima, baixo, esquerda, direita) com detecção espacial de elementos interativos, contorno visual em destaque azul ciano e rolagem de tela inteligente.
+  - **Suporte a Joystick e Gamepads**: Modo de ponteiro virtual com direcional analógico esquerdo, rolagem suave de página com analógico direito, clique com botão A / Gatilho, e botão B para voltar.
+  - **Retorno no Histórico**: O botão voltar (Back) do controle remoto navega no histórico do WebView antes de fechar o aplicativo.
 
 ---
 
@@ -110,6 +116,12 @@ webappgen/
 ---
 
 ## 📝 Changelog
+
+### Versão 1.2.0
+- 📺 **Formato Android TV no Framework Capacitor**: Adicionada nova opção de formato de aplicativo `Android TV (.apk Leanback / Smart TV)`.
+- 🖼️ **Geração Automática de Banner 16:9**: Criação automática do banner do app para o launcher do Android TV com base no ícone informado.
+- 🎮 **Amigável a Controle Remoto e Joystick**: Injeção de controlador de navegação espacial D-pad com anel de foco fluorescente, ponteiro virtual e rolagem analógica por gamepad.
+- 🔄 **Navegação Nativa de Retorno**: Tecla Back do controle remoto retorna páginas no histórico do WebView.
 
 ### Versão 1.1.0
 - ✨ **Campo Título do Aplicativo**: Novo campo para definir o título oficial da janela e da aplicação desktop/mobile.
