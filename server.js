@@ -68,6 +68,12 @@ app.post('/api/build', (req, res) => {
     });
   }
 
+  if (format === 'dmg' && process.platform !== 'darwin') {
+    return res.status(400).json({
+      error: 'A opção de compilação para macOS (.dmg) só está disponível quando o servidor estiver rodando no macOS.'
+    });
+  }
+
   const validFrameworks = ['electron', 'tauri', 'capacitor'];
   const selectedFramework = framework && validFrameworks.includes(framework) ? framework : 'electron';
 
@@ -200,8 +206,11 @@ app.get('/api/builds', (req, res) => {
 
 // Environment info
 app.get('/api/info', (req, res) => {
+  const isMac = process.platform === 'darwin';
   res.json({
     platform: process.platform,
+    isMac,
+    isMacOS: isMac,
     arch: process.arch,
     nodeVersion: process.version,
     inDocker: fs.existsSync('/.dockerenv')

@@ -42,16 +42,20 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentIconData = null;
   let cachedMetadata = { url: null, data: null };
 
+  let isServerMac = false;
+
   // 1. Fetch system info
   async function loadSystemInfo() {
     try {
       const res = await fetch('/api/info');
       if (res.ok) {
         const info = await res.json();
+        isServerMac = Boolean(info.isMac || info.platform === 'darwin');
         const osLabel = info.inDocker 
           ? 'Ambiente Docker (Linux x64)' 
-          : `${info.platform === 'win32' ? 'Windows' : info.platform} (${info.arch})`;
+          : `${info.platform === 'win32' ? 'Windows' : (info.platform === 'darwin' ? 'macOS' : info.platform)} (${info.arch})`;
         envBadgeText.textContent = `Online • ${osLabel}`;
+        updateFormatOptions();
       }
     } catch (_) {
       envBadgeText.textContent = 'Servidor Conectado';
@@ -109,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Synchronize format combobox based on selected framework
   const desktopFormatOptions = [
     { value: 'exe', label: '🪟 Windows Executável (.exe portátil)' },
-    { value: 'dmg', label: '🍎 macOS Imagem de Disco (.dmg)' },
+    { value: 'dmg', label: '🍎 macOS Imagem de Disco (.dmg)', macOnly: true },
     { value: 'AppImage', label: '🐧 Linux AppImage (.AppImage universal)' },
     { value: 'deb', label: '📦 Instalador Debian / Ubuntu (.deb)' },
     { value: 'rpm', label: '🎩 Instalador Fedora / RHEL (.rpm)' }
@@ -149,7 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
         formatSelect.value = androidFormatOptions[0].value;
       }
     } else {
-      desktopFormatOptions.forEach(opt => {
+      const availableDesktopOptions = desktopFormatOptions.filter(opt => !opt.macOnly || isServerMac);
+
+      availableDesktopOptions.forEach(opt => {
         const option = document.createElement('option');
         option.value = opt.value;
         option.textContent = opt.label;
@@ -159,8 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formatSelect.appendChild(option);
       });
 
-      if (!desktopFormatOptions.some(opt => opt.value === formatSelect.value)) {
-        formatSelect.value = desktopFormatOptions[0].value;
+      if (!availableDesktopOptions.some(opt => opt.value === formatSelect.value)) {
+        formatSelect.value = availableDesktopOptions[0].value;
       }
     }
 
