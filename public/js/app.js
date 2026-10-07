@@ -86,13 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
         : (b.framework === 'capacitor' ? 'Capacitor' : 'Electron');
 
       const isTv = b.format === 'androidtv';
-      const formatLabel = isTv ? '📺 Android TV' : (b.format === 'apk' ? '🤖 Android' : b.format);
+      const formatLabel = isTv 
+        ? '📺 Android TV' 
+        : (b.format === 'apk' ? '🤖 Android' : (b.format === 'dmg' ? '🍎 macOS DMG' : b.format));
 
       return `
         <div class="history-item">
           <div class="history-details">
             <span class="history-framework-tag ${b.framework || 'electron'}">${fwName}</span>
-            <span class="history-format-tag ${isTv ? 'tv' : ''}">${formatLabel}</span>
+            <span class="history-format-tag ${isTv ? 'tv' : (b.format === 'dmg' ? 'dmg' : '')}">${formatLabel}</span>
             <div>
               <div class="history-name">${escapeHtml(b.displayName)}</div>
               <div class="history-url">${escapeHtml(b.url)}</div>
@@ -107,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Synchronize format combobox based on selected framework
   const desktopFormatOptions = [
     { value: 'exe', label: '🪟 Windows Executável (.exe portátil)' },
+    { value: 'dmg', label: '🍎 macOS Imagem de Disco (.dmg)' },
     { value: 'AppImage', label: '🐧 Linux AppImage (.AppImage universal)' },
     { value: 'deb', label: '📦 Instalador Debian / Ubuntu (.deb)' },
     { value: 'rpm', label: '🎩 Instalador Fedora / RHEL (.rpm)' }

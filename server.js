@@ -61,7 +61,7 @@ app.post('/api/build', (req, res) => {
     return res.status(400).json({ error: 'A URL informada possui formato inválido.' });
   }
 
-  const validFormats = ['exe', 'AppImage', 'deb', 'rpm', 'apk', 'androidtv'];
+  const validFormats = ['exe', 'dmg', 'AppImage', 'deb', 'rpm', 'apk', 'androidtv'];
   if (!format || !validFormats.includes(format)) {
     return res.status(400).json({ 
       error: `Formato inválido. Os formatos suportados são: ${validFormats.join(', ')}` 

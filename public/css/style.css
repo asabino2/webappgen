@@ -1031,6 +1031,12 @@ body {
   border: 1px solid rgba(56, 189, 248, 0.4);
 }
 
+.history-format-tag.dmg {
+  background: rgba(236, 72, 153, 0.15);
+  color: #f472b6;
+  border: 1px solid rgba(236, 72, 153, 0.35);
+}
+
 /* Format info hint (Android TV info card) */
 .format-info-hint {
   margin-top: 0.65rem;

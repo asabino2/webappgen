@@ -1,6 +1,6 @@
 # WebAppGen 🚀
 
-> Transforme qualquer website ou aplicação web em um aplicativo nativo para **Windows (.exe)**, **Linux (AppImage, DEB, RPM)** e **Android (.apk)** com interface web moderna, logs em tempo real e download direto.
+> Transforme qualquer website ou aplicação web em um aplicativo nativo para **Windows (.exe)**, **macOS (.dmg)**, **Linux (AppImage, DEB, RPM)** e **Android (.apk)** com interface web moderna, logs em tempo real e download direto.
 
 ---
 
@@ -13,11 +13,12 @@
   - **📱 Capacitor (Android)**: Motor de empacotamento móvel moderno para gerar instaladores APK para dispositivos Android.
 - 📦 **Formatos Suportados & Seleção Inteligente**:
   - **Windows Executável (.exe)**: Versão portável autocontida para Windows.
+  - **macOS Imagem de Disco (.dmg)**: Pacote instalador oficial `.dmg` para computadores macOS (compatível com Electron e Tauri).
   - **Linux AppImage (.AppImage)**: Pacote universal executável para qualquer distribuição Linux.
   - **Instalador Debian / Ubuntu (.deb)**: Pacote nativo `.deb`.
   - **Instalador Fedora / RHEL (.rpm)**: Pacote nativo `.rpm`.
-  - **APK Android (.apk)**: Pacote instalador Android compilado via Gradle.
-  - 💡 *Sincronização de Combobox*: Ao selecionar **Capacitor**, o combobox de formatos ajusta-se automaticamente exibindo **apenas** a opção **APK Android**. Ao escolher outro framework (Electron ou Tauri), o formato APK é ocultado e ficam disponíveis apenas os formatos desktop.
+  - **APK Android (.apk / .apk TV)**: Pacotes instaladores Android compilados via Gradle (Mobile e Android TV Leanback).
+  - 💡 *Sincronização de Combobox*: Ao selecionar **Capacitor**, o combobox de formatos ajusta-se automaticamente exibindo as opções Android (APK Mobile e Android TV). Ao escolher **Electron** ou **Tauri**, ficam disponíveis todos os formatos para desktop: Windows (.exe), macOS (.dmg) e distribuições Linux (.AppImage, .deb, .rpm).
 - ⚡ **Compilação e Logs em Tempo Real**: Console estilo terminal integrado com streaming contínuo de logs via Server-Sent Events (SSE).
 - 📊 **Barra de Progresso Dinâmica**: Indicador visual do estágio atual (resolução de ícones, configuração de templates, compilação nativa com Gradle/Electron/Tauri).
 - 🎯 **Download Imediato**: Botão de download com identificação de tamanho do arquivo e nome do instalador gerado.
@@ -116,6 +117,12 @@ webappgen/
 ---
 
 ## 📝 Changelog
+
+### Versão 1.3.0
+- 🍎 **Exportação para macOS (.dmg) no Electron e Tauri**: Adicionado suporte à exportação e geração de imagens de disco `.dmg` para Apple macOS ao selecionar os motores Electron ou Tauri.
+- ⚙️ **Configuração de Alvos do Electron Builder**: Configuração do alvo nativo `mac: { target: ['dmg'] }` e integração com a CLI do electron-builder (`--mac dmg`).
+- 🦀 **Integração com Tauri Bundler**: Suporte à flag `--bundles dmg` e cópia recursiva automática de pacotes DMG compilados na pasta de distribuição.
+- 🖥️ **Interface e Sincronização Dinâmica**: Adição da opção `🍎 macOS Imagem de Disco (.dmg)` no seletor de formatos de desktop, tag visual estilizada no histórico de builds e validação de requisições no backend.
 
 ### Versão 1.2.0
 - 📺 **Formato Android TV no Framework Capacitor**: Adicionada nova opção de formato de aplicativo `Android TV (.apk Leanback / Smart TV)`.

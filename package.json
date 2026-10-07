@@ -1,7 +1,7 @@
 {
   "name": "webappgen",
   "version": "1.0.0",
-  "description": "Transform any website URL into desktop apps for Windows (.exe), Linux (AppImage, deb, rpm)",
+  "description": "Transform any website URL into desktop apps for Windows (.exe), macOS (.dmg), Linux (AppImage, deb, rpm) and Android (.apk)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
