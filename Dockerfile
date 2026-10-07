@@ -3,7 +3,7 @@
 FROM node:20-bookworm-slim
 
 # Set non-interactive environment
-ENV CI=1 \
+ENV CI=true \
     DEBIAN_FRONTEND=noninteractive
 
 # Install runtime and build dependencies on Debian:
@@ -13,7 +13,7 @@ ENV CI=1 \
 # - python3, make, g++, pkg-config (native build tools)
 # - fuse, libfuse2, rpm (Linux packaging tools)
 # - libvips-dev (Sharp image processing)
-# - rustc, cargo (for Tauri builds)
+# - rustc, cargo, libwebkit2gtk-4.1-dev, libgtk-3-dev, libayatana-appindicator3-dev, librsvg2-dev, libssl-dev (for Tauri builds)
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -38,7 +38,12 @@ RUN dpkg --add-architecture i386 && \
       rpm \
       libvips-dev \
       rustc \
-      cargo && \
+      cargo \
+      libssl-dev \
+      libgtk-3-dev \
+      libayatana-appindicator3-dev \
+      librsvg2-dev \
+      libwebkit2gtk-4.1-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
