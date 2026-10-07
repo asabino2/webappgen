@@ -23,7 +23,7 @@
 - 📊 **Barra de Progresso Dinâmica**: Indicador visual do estágio atual (resolução de ícones, configuração de templates, compilação nativa com Gradle/Electron/Tauri).
 - 🎯 **Download Imediato**: Botão de download com identificação de tamanho do arquivo e nome do instalador gerado.
 - 🖼️ **Resolução e Adaptação de Ícones**: Busca automática de favicon em alta resolução da URL fornecida, adaptando para resoluções desktop e para todas as densidades de tela do Android (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`).
-- 🐳 **Docker Otimizado em Alpine Linux**: `Dockerfile` baseado em **Alpine Linux** (`node:20-alpine`) com todas as ferramentas essenciais pré-configuradas (OpenJDK 17, Android SDK Command-Line Tools, Platform Tools, Build Tools, camada `gcompat`, Electron e Tauri).
+- 🐳 **Docker Multiplataforma Completo**: `Dockerfile` baseado em **Debian Bookworm** (`node:20-bookworm-slim`) com todas as ferramentas essenciais pré-configuradas (Wine com arquitetura multi-arch i386/x64 para geração de `.exe` Windows com ícones e ASAR integrity, OpenJDK 17 nativo e Android SDK para compilação de APKs com Capacitor, compiladores nativos glibc, Electron e Tauri).
 
 ---
 
@@ -31,7 +31,7 @@
 
 ### Opção 1: Usando Docker Compose (Recomendado)
 
-O container Docker baseado em Alpine Linux já vem totalmente equipado com Node.js 20, OpenJDK 17, Android SDK (`cmdline-tools`, `platforms;android-34`, `build-tools;34.0.0`), ferramentas de empacotamento Linux (`rpm`, `fuse`) e compiladores:
+O container Docker baseado em Debian Bookworm já vem totalmente equipado com Node.js 20, Wine (wine32 e wine64), OpenJDK 17, Android SDK (`cmdline-tools`, `platforms;android-34`, `build-tools;34.0.0`), ferramentas de empacotamento Linux (`rpm`, `fuse`) e compiladores nativos:
 
 ```bash
 # Iniciar o container

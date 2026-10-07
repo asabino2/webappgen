@@ -1,42 +1,49 @@
 # WebAppGen - Multi-platform App Generator for Websites
 # Multi-platform packaging container for Linux (AppImage, DEB, RPM), Windows (.exe) and Android (.apk)
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 
 # Set non-interactive environment
-ENV CI=1
+ENV CI=1 \
+    DEBIAN_FRONTEND=noninteractive
 
-# Install runtime and build dependencies on Alpine Linux:
+# Install runtime and build dependencies on Debian:
 # - bash, curl, wget, git, unzip, tar, file, ca-certificates
-# - openjdk17 (JDK for Android SDK and Gradle builds)
-# - gcompat, libstdc++, libgcc (glibc compatibility layer for precompiled Android SDK cmdline-tools & aapt2)
-# - python3, make, g++, pkgconf (native build tools)
-# - fuse, rpm (Linux packaging tools)
-# - rust, cargo (for Tauri builds)
-RUN apk update && apk add --no-cache \
-    bash \
-    curl \
-    wget \
-    git \
-    unzip \
-    tar \
-    file \
-    ca-certificates \
-    openjdk17 \
-    gcompat \
-    libstdc++ \
-    libgcc \
-    python3 \
-    make \
-    g++ \
-    pkgconf \
-    fuse \
-    rpm \
-    vips-dev \
-    rust \
-    cargo
+# - openjdk-17-jdk-headless (JDK for Android SDK and Gradle builds)
+# - wine, wine32, wine64 (Wine environment for Windows .exe and Electron packaging)
+# - python3, make, g++, pkg-config (native build tools)
+# - fuse, libfuse2, rpm (Linux packaging tools)
+# - libvips-dev (Sharp image processing)
+# - rustc, cargo (for Tauri builds)
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+      bash \
+      curl \
+      wget \
+      git \
+      unzip \
+      tar \
+      file \
+      ca-certificates \
+      openjdk-17-jdk-headless \
+      wine \
+      wine32 \
+      wine64 \
+      python3 \
+      make \
+      g++ \
+      pkg-config \
+      fuse \
+      libfuse2 \
+      rpm \
+      libvips-dev \
+      rustc \
+      cargo && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Configure Java and Android SDK Environment
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk \
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 \
     ANDROID_HOME=/opt/android-sdk \
     ANDROID_SDK_ROOT=/opt/android-sdk \
     GRADLE_USER_HOME=/root/.gradle
